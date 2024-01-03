@@ -4,9 +4,11 @@ import { VertexLayout } from "./vertexBuffer";
 
 export default class VertexArrayObject {
 	private readonly vao: WebGLVertexArrayObject;
+	private layouts: Set<VertexLayout<any>>;
 	private canvas: WebGLCanvas;
 
 	constructor(canvas: WebGLCanvas) {
+		this.layouts = new Set();
 		this.canvas = canvas;
 		this.vao = this.generateVertexArray();
 		this.bind();
@@ -19,6 +21,8 @@ export default class VertexArrayObject {
 	}
 
 	public addLayout<T extends BufferSource>(layout: VertexLayout<T>) {
+		if (this.layouts.has(layout)) return this;
+
 		const { vbo, ibo } = layout;
 		this.bind();
 		vbo.bind();
@@ -37,11 +41,11 @@ export default class VertexArrayObject {
 				layout.getOffsetOfAttribute(i)
 			);
 		});
-    
+
 		this.unbind();
 		vbo.unbind();
 		if (ibo) ibo.unbind();
-
+		this.layouts.add(layout);
 		return this;
 	}
 

@@ -12,6 +12,10 @@ const DataTypes = {
 	UNSIGNED_INT: 0x1405,
 	FLOAT: 0x1406,
 };
+type LayoutSetupArg = {
+	indices?: number[];
+	attribLocations?: number[];
+};
 
 export class VertexLayout<T extends BufferSource> {
 	public readonly ibo?: IndexBufferObject;
@@ -21,10 +25,10 @@ export class VertexLayout<T extends BufferSource> {
 	public readonly nItemsPerVertex: number;
 	public readonly data: T;
 	public readonly offsets: number[];
-	public readonly attributeLocations: number[];
 
 	public readonly BYTES_PER_ELEMENT: number;
 	public readonly type: number;
+	public _attributeLocations: number[];
 
 	constructor(
 		canvas: WebGLCanvas,
@@ -38,7 +42,7 @@ export class VertexLayout<T extends BufferSource> {
 		this.data = data;
 		this.shape = shape;
 		this.nItemsPerVertex = this.shape.reduce((count, s) => count + s, 0);
-		this.attributeLocations = this.calculateAttributeLocations(); // Todo allow add custom location
+		this._attributeLocations = this.calculateAttributeLocations(); // Todo allow add custom location
 		this.nVertices =
 			"length" in data && typeof data.length === "number"
 				? Math.round(data.length / this.nItemsPerVertex)
@@ -57,7 +61,9 @@ export class VertexLayout<T extends BufferSource> {
 	get usesIBO() {
 		return !!this.ibo;
 	}
-
+	get attributeLocations() {
+		return this._attributeLocations;
+	}
 	get attributesPerVertex() {
 		return this.shape.length;
 	}
@@ -83,7 +89,21 @@ export class VertexLayout<T extends BufferSource> {
 			`attributePosIdx should be: 0 <= attributePosIdx < ${this.shape.length}`
 		);
 	}
+	public delete() {
+		this.vbo.delete();
+		this.ibo?.delete();
+	}
 
+	public setAttribLocations(locations: number[]) {
+		if (locations.length !== this.shape.length)
+			throw UserError.Error(
+				`There should be ${
+					this.shape.length
+				} attribute locations as this shape is ${JSON.stringify(this.shape)}`
+			);
+		this._attributeLocations = locations;
+		return this;
+	}
 	private calculateAttributeLocations(): number[] {
 		return this.shape.map((_, i) => i);
 	}
@@ -149,14 +169,26 @@ export class VertexBuffer {
 		return this;
 	}
 
-	public getFloat32Layout(canvas: WebGLCanvas, indices?: number[]) {
-		return new VertexLayout(
+	/**
+	 *
+	 * @param canvas
+	 * @param setup: `Indices` add data for index buffer if your are rendering with Index Buffer Objects. `attribLocations` If you are putting all the attributes in the same layout then you don't need to pass in any thing. it will use the attribute location from `0 - len(attributes)`. If you want to add custom attribute locations or you need to add multiple layouts to the same VAO then use your custom attribute locations
+	 * @returns
+	 */
+	public getFloat32Layout(canvas: WebGLCanvas, setup: LayoutSetupArg | null) {
+		const layout = new VertexLayout(
 			canvas,
 			DataTypes.FLOAT,
 			new Float32Array(this.bufferData),
 			this.shape,
-			indices
+			setup?.indices
 		);
+		if (setup) {
+			if (setup.attribLocations)
+				layout.setAttribLocations(setup.attribLocations);
+		}
+
+		return layout;
 	}
 
 	private getVertexShape(vertex: number[][]) {
@@ -166,6 +198,11 @@ export class VertexBuffer {
 	private isShapeCorrect(vertex: number[][]) {
 		const shape = this.getVertexShape(vertex);
 
-		return JSON.stringify(this.shape) === JSON.stringify(shape);
+		if (shape.length !== this.shape.length) return false;
+
+		for (let i = 0; i < this.shape.length; i++)
+			if (shape[i] !== this.shape[i]) return false;
+
+		return true;
 	}
 }
