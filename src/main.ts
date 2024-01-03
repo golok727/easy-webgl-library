@@ -31,8 +31,10 @@ container.appendChild(canvas.domElement);
 	gl.viewport(0, 0, gl.canvas.width, gl.canvas.height);
 	basicShader.bind();
 	va.bind();
+
 	const draw = () => {
 		gl.clearColor(0.0, 0.0, 0.0, 1.0);
+		basicShader.setUniform3f("u_Color", 1, 0.3, 0.1);
 		gl.clear(gl.COLOR_BUFFER_BIT);
 		gl.drawElements(gl.TRIANGLES, 6, gl.UNSIGNED_INT, 0);
 	};

@@ -39,6 +39,9 @@ export default class Shader implements GLRendererId {
 	private vertexShaderPath: string;
 	private fragmentShaderPath: string;
 	private uniformLocationCache: Map<string, WebGLUniformLocation>;
+	public warnings: {
+		uniformNotLocatedWarning: boolean;
+	};
 
 	constructor(
 		canvas: WebGLCanvas,
@@ -50,6 +53,9 @@ export default class Shader implements GLRendererId {
 		this.vertexShaderPath = vertexShaderPath;
 		this.fragmentShaderPath = fragmentShaderPath;
 		this.uniformLocationCache = new Map();
+		this.warnings = {
+			uniformNotLocatedWarning: true,
+		};
 	}
 
 	public async load() {
@@ -140,7 +146,7 @@ export default class Shader implements GLRendererId {
 		if (cache) return cache;
 		const gl = this.canvas.getContext();
 		const location = gl.getUniformLocation(this.shaderProgram, name);
-		if (!location) {
+		if (!location && this.warnings.uniformNotLocatedWarning) {
 			console.warn(`Uniform with name '${name} not found'`);
 		}
 		return location;
