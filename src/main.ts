@@ -15,7 +15,19 @@ container.appendChild(canvas.domElement);
 
 	await basicShader.load();
 
+	basicShader.warnings.uniformLocationNotFound.allow = false;
 	basicShader.warnings.uniformLocationNotFound.ignore.add("u_Time");
+	basicShader.warnings.uniformLocationNotFound.ignore.add("u_Resolution");
+	// basicShader.warnings.uniformLocationNotFound.ignore.add("u_Color");
+
+	// const pos = new VertexBuffer(2)
+	// 	.add([-1, -1])
+	// 	.add([1, -1])
+	// 	.add([-1, 1])
+	// 	.add([1, 1])
+	// 	.getFloat32Layout(canvas, {
+	// 		indices: [0, 1, 2, 2, 3, 1],
+	// 	});
 
 	const pos = new VertexBuffer(2)
 		.add([-1, -1])
@@ -36,6 +48,7 @@ container.appendChild(canvas.domElement);
 	basicShader.bind();
 	va.bind();
 
+	basicShader.setUniform2f("u_Resolution", gl.canvas.width, gl.canvas.height);
 	let lastTime = 0;
 
 	const FPS = 60; // Desired frames per second
@@ -47,7 +60,6 @@ container.appendChild(canvas.domElement);
 		basicShader.setUniform3f("u_Color", 0.1, 0.3, 0.7);
 		basicShader.setUniform1f("u_Time", performance.now());
 
-		// Your drawing code here
 		gl.drawElements(gl.TRIANGLES, 6, gl.UNSIGNED_INT, 0);
 	};
 
