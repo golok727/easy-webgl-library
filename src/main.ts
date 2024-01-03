@@ -15,6 +15,8 @@ container.appendChild(canvas.domElement);
 
 	await basicShader.load();
 
+	basicShader.warnings.uniformLocationNotFound.ignore.add("u_Time");
+
 	const layout = new VertexBuffer(2)
 		.add([-1, -1])
 		.add([1, -1])
@@ -35,6 +37,7 @@ container.appendChild(canvas.domElement);
 	const draw = () => {
 		gl.clearColor(0.0, 0.0, 0.0, 1.0);
 		basicShader.setUniform3f("u_Color", 1, 0.3, 0.1);
+		basicShader.setUniform1f("u_Time", performance.now());
 		gl.clear(gl.COLOR_BUFFER_BIT);
 		gl.drawElements(gl.TRIANGLES, 6, gl.UNSIGNED_INT, 0);
 	};

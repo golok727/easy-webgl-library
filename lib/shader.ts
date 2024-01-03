@@ -40,7 +40,10 @@ export default class Shader implements GLRendererId {
 	private fragmentShaderPath: string;
 	private uniformLocationCache: Map<string, WebGLUniformLocation>;
 	public warnings: {
-		uniformNotLocatedWarning: boolean;
+		uniformLocationNotFound: {
+			allow: boolean;
+			ignore: Set<string>;
+		};
 	};
 
 	constructor(
@@ -54,7 +57,10 @@ export default class Shader implements GLRendererId {
 		this.fragmentShaderPath = fragmentShaderPath;
 		this.uniformLocationCache = new Map();
 		this.warnings = {
-			uniformNotLocatedWarning: true,
+			uniformLocationNotFound: {
+				allow: true,
+				ignore: new Set(),
+			},
 		};
 	}
 
@@ -146,7 +152,11 @@ export default class Shader implements GLRendererId {
 		if (cache) return cache;
 		const gl = this.canvas.getContext();
 		const location = gl.getUniformLocation(this.shaderProgram, name);
-		if (!location && this.warnings.uniformNotLocatedWarning) {
+		if (
+			!location &&
+			this.warnings.uniformLocationNotFound.allow &&
+			!this.warnings.uniformLocationNotFound.ignore.has(name)
+		) {
 			console.warn(`Uniform with name '${name} not found'`);
 		}
 		return location;
