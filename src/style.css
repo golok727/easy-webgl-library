@@ -1,0 +1,27 @@
+*,
+*::before,
+*::after {
+	box-sizing: border-box;
+	margin: 0;
+}
+
+body {
+	background-color: #000;
+	color: #fff;
+	font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+		Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
+	display: flex;
+	height: 100vh;
+	overflow: hidden;
+}
+.container {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	flex-direction: column;
+	gap: 2rem;
+	flex: 1;
+}
+.container canvas {
+	border: 1px solid orange;
+}
