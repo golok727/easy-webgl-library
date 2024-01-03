@@ -1,4 +1,4 @@
-import { WebGLCanvas } from ".";
+import WebGLCanvas from "./canvas";
 
 class ShaderSource {
 	private shaderType!: ShaderType;

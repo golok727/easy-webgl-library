@@ -1,3 +1,12 @@
+import WebGLCanvas from "./canvas";
+
 export default class Renderer {
-	constructor() {}
+	canvas: WebGLCanvas;
+	constructor(canvas: WebGLCanvas) {
+		this.canvas = canvas;
+	}
+
+	public draw() {}
+
+	public render() {}
 }

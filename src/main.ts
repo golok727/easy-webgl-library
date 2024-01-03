@@ -18,16 +18,6 @@ container.appendChild(canvas.domElement);
 	basicShader.warnings.uniformLocationNotFound.allow = false;
 	basicShader.warnings.uniformLocationNotFound.ignore.add("u_Time");
 	basicShader.warnings.uniformLocationNotFound.ignore.add("u_Resolution");
-	// basicShader.warnings.uniformLocationNotFound.ignore.add("u_Color");
-
-	// const pos = new VertexBuffer(2)
-	// 	.add([-1, -1])
-	// 	.add([1, -1])
-	// 	.add([-1, 1])
-	// 	.add([1, 1])
-	// 	.getFloat32Layout(canvas, {
-	// 		indices: [0, 1, 2, 2, 3, 1],
-	// 	});
 
 	const pos = new VertexBuffer(2)
 		.add([-1, -1])

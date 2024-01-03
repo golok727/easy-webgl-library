@@ -1,4 +1,4 @@
-import { WebGLCanvas } from ".";
+import WebGLCanvas from "./canvas";
 import { GLError } from "./error";
 import { VertexLayout } from "./vertexBuffer";
 

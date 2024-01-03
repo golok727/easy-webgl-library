@@ -1,4 +1,4 @@
-export { default as WebGLCanvas } from "./canavs";
+export { default as WebGLCanvas } from "./canvas";
 export { default as Shader } from "./shader";
 
 export { VertexLayout, VertexBuffer } from "./vertexBuffer";

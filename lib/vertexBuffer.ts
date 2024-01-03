@@ -1,4 +1,4 @@
-import { WebGLCanvas } from ".";
+import WebGLCanvas from "./canvas";
 import { UserError } from "./error";
 import IndexBufferObject from "./indexBufferObject";
 import { VertexBufferObject } from "./vertexObject";
