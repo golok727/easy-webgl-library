@@ -15,23 +15,22 @@ container.appendChild(canvas.domElement);
 
 	await basicShader.load();
 
-	const layout = new VertexBuffer(2, 3)
-		.add([-1, -1], [1, 1, 0])
-		.add([1, -1], [1, 1, 1])
-		.add([-1, 1], [1, 1, 1])
-		.add([1, 1], [1, 1, 1])
+	const layout = new VertexBuffer(2)
+		.add([-1, -1])
+		.add([1, -1])
+		.add([-1, 1])
+		.add([1, 1])
 		.getFloat32Layout(canvas, [0, 1, 2, 2, 3, 1]);
 
-	const vao = new VertexArrayObject(canvas);
-	vao.addLayout(layout);
+	const va = new VertexArrayObject(canvas);
+	va.addLayout(layout);
 
-	vao.unbind();
+	va.unbind();
 	basicShader.unbind();
 
 	gl.viewport(0, 0, gl.canvas.width, gl.canvas.height);
-
 	basicShader.bind();
-	vao.bind();
+	va.bind();
 	const draw = () => {
 		gl.clearColor(0.0, 0.0, 0.0, 1.0);
 		gl.clear(gl.COLOR_BUFFER_BIT);

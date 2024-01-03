@@ -29,7 +29,7 @@ class ShaderSource {
 }
 
 export default class Shader implements GLRendererId {
-	rendererId!: WebGLProgram;
+	shaderProgram!: WebGLProgram;
 	canvas!: WebGLCanvas;
 	private src!: {
 		vs: ShaderSource;
@@ -38,6 +38,7 @@ export default class Shader implements GLRendererId {
 	private isLoaded: boolean;
 	private vertexShaderPath: string;
 	private fragmentShaderPath: string;
+	private uniformLocationCache: Map<string, WebGLUniformLocation>;
 
 	constructor(
 		canvas: WebGLCanvas,
@@ -48,6 +49,7 @@ export default class Shader implements GLRendererId {
 		this.isLoaded = false;
 		this.vertexShaderPath = vertexShaderPath;
 		this.fragmentShaderPath = fragmentShaderPath;
+		this.uniformLocationCache = new Map();
 	}
 
 	public async load() {
@@ -72,7 +74,7 @@ export default class Shader implements GLRendererId {
 
 		if (!program) throw new Error("Error Creating program");
 
-		this.rendererId = program;
+		this.shaderProgram = program;
 		const vs = this.createShader(this.src.vs);
 		const fs = this.createShader(this.src.fs);
 
@@ -109,9 +111,44 @@ export default class Shader implements GLRendererId {
 		return shader;
 	}
 
+	public setUniform1f(name: string, ...args: GLUniformFnArgs<"uniform1f">) {
+		const location = this.getUniformLocation(name);
+		const gl = this.canvas.getContext();
+		gl.uniform1f(location, ...args);
+	}
+
+	public setUniform2f(name: string, ...args: GLUniformFnArgs<"uniform2f">) {
+		const location = this.getUniformLocation(name);
+		const gl = this.canvas.getContext();
+		gl.uniform2f(location, ...args);
+	}
+
+	public setUniform3f(name: string, ...args: GLUniformFnArgs<"uniform3f">) {
+		const location = this.getUniformLocation(name);
+		const gl = this.canvas.getContext();
+		gl.uniform3f(location, ...args);
+	}
+
+	public setUniform4f(name: string, ...args: GLUniformFnArgs<"uniform4f">) {
+		const location = this.getUniformLocation(name);
+		const gl = this.canvas.getContext();
+		gl.uniform4f(location, ...args);
+	}
+
+	private getUniformLocation(name: string) {
+		const cache = this.uniformLocationCache.get(name);
+		if (cache) return cache;
+		const gl = this.canvas.getContext();
+		const location = gl.getUniformLocation(this.shaderProgram, name);
+		if (!location) {
+			console.warn(`Uniform with name '${name} not found'`);
+		}
+		return location;
+	}
+
 	public bind() {
 		this.checkLoaded();
-		this.canvas.getContext().useProgram(this.rendererId);
+		this.canvas.getContext().useProgram(this.shaderProgram);
 	}
 
 	public unbind() {
@@ -122,7 +159,8 @@ export default class Shader implements GLRendererId {
 
 	public delete() {
 		this.checkLoaded();
-		this.canvas.getContext().deleteProgram(this.rendererId);
+		this.canvas.getContext().deleteProgram(this.shaderProgram);
+		this.uniformLocationCache.clear();
 	}
 
 	private checkLoaded() {
