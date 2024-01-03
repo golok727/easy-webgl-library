@@ -19,6 +19,5 @@
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true
   },
-
-  "include": ["src", "lib", "*.d.ts", "dist"],
+  "include": ["lib", "*.d.ts"],
 }

@@ -35,7 +35,7 @@ void main()
 `main.ts`
 ```ts
 import "./style.css";
-import { WebGLCanvas, Shader, VertexBuffer, VertexArrayObject } from "../lib";
+import { WebGLCanvas, Shader, VertexBuffer, VertexArrayObject } from "@golok/vertexify";
 
 const container = document.querySelector(".container") as HTMLDivElement;
 const canvas = new WebGLCanvas(700, 500);
