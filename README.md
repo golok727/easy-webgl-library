@@ -1,4 +1,6 @@
-# WEBGL-2 library
+# Vertexify
+
+A WebGL-2 Abstraction
 
 `basic.vertex.glsl`
 
