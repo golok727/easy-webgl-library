@@ -151,8 +151,8 @@ export class VertexBuffer {
 	 * 2 is the number of components in the position attribute \
 	 * 3 is the number of components in the color attribute
 	 */
-	constructor({ shape }: { shape: number[] }) {
-		this.shape = shape;
+	constructor(...vertexShape: number[]) {
+		this.shape = vertexShape;
 		this.bufferData = [];
 	}
 

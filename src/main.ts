@@ -25,7 +25,7 @@ container.appendChild(canvas.domElement);
 	basicShader.warnings.uniformLocationNotFound.ignore.add("u_Time");
 	basicShader.warnings.uniformLocationNotFound.ignore.add("u_Resolution");
 
-	const pos = new VertexBuffer({ shape: [2] })
+	const pos = new VertexBuffer(2)
 		.add([-1, -1])
 		.add([1, -1])
 		.add([-1, 1])
